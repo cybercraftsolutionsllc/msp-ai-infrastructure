@@ -1,0 +1,15 @@
+# Ignore Environment Variables (Secrets)
+.env
+.env.*
+!.env.example
+
+# Ignore Database, Model Storage, and Config Volumes
+*/data/
+*/db_data/
+*/models/
+*/*_data/
+**/litellm-config.yaml
+
+# OS generated files
+.DS_Store
+Thumbs.db
