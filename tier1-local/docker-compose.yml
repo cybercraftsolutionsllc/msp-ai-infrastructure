@@ -1,0 +1,41 @@
+services:
+  ollama:
+    image: ollama/ollama:${OLLAMA_VERSION}
+    container_name: ollama
+    restart: ${RESTART_POLICY}
+    ports:
+      - "${OLLAMA_PORT}:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - msp-network
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:${OPEN_WEBUI_VERSION}
+    container_name: open-webui
+    restart: ${RESTART_POLICY}
+    ports:
+      - "${OPEN_WEBUI_PORT}:8080"
+    volumes:
+      - open_webui_data:/app/backend/data
+    environment:
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL}
+    depends_on:
+      - ollama
+    networks:
+      - msp-network
+
+networks:
+  msp-network:
+    driver: bridge
+
+volumes:
+  ollama_data:
+  open_webui_data:
